@@ -27,7 +27,7 @@ def arg_parse():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-p", "--port", help="Port to connect to", type=str)
     parser.add_argument("-b", "--baudrate", help="port baudrate", default=115200, type=int)
-    parser.add_argument("-c", "--command", nargs='+', help="Command to send to the gnss receiver.\nAvailable commands are: 'get_model' 'get_firmware' 'reset' 'send_config_file'", type=str)
+    parser.add_argument("-c", "--command", nargs='+', required=True, help="Command to send to the gnss receiver.\nAvailable commands are: 'get_model' 'get_firmware' 'reset' 'send_config_file'", type=str)
     parser.add_argument("-s", "--store", action='store_true', help="Store settings as permanent", default=False)
     parser.add_argument("-r", "--retry", help="set a number of retry if the command fails", default=0, type=int)
     parser.add_argument("-d", "--debug", action='store_true')
