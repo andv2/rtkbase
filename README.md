@@ -9,7 +9,7 @@ Frontend's main features are:
 
 + View the satellites signal levels
 + View the base location on a map
-+ Detect and configure the Gnss receiver (Ublox F9P, Septentrio Mosaic-X5, Unicore UM980 / UM982)
++ Detect and configure the Gnss receiver (Ublox F9P, Septentrio Mosaic-X5, Unicore UM960 / UM980 / UM982)
 + Start/stop various services (Sending data to a Ntrip caster, internal Ntrip caster, Rtcm server, Sending Rtcm stream on a radio link, Log raw data to files)
 + Edit the services settings
 + Convert raw data to Rinex
@@ -43,7 +43,7 @@ If you use a Raspberry Pi, thanks to [jancelin](https://github.com/jancelin), yo
   sudo ./install.sh --all release
   ```
 
-+ Go grab a coffee, it's gonna take a while. The script will install the needed software, and if you use a supported receiver (U-Blox ZED-F9P, Septentrio Mosaic-X5, Unicore UM980/UM982), it'll be detected and set to work as a base station. If you don't use a supported recevier, you will have to configure your receiver manually (see step 7 in manual installation), and choose the correct port from the settings page.
++ Go grab a coffee, it's gonna take a while. The script will install the needed software, and if you use a supported receiver (U-Blox ZED-F9P, Septentrio Mosaic-X5, Unicore UM960/UM980/UM982), it'll be detected and set to work as a base station. If you don't use a supported recevier, you will have to configure your receiver manually (see step 7 in manual installation), and choose the correct port from the settings page.
 
 + Open a web browser to `http://ip_of_your_sbc` (the script will try to show you this ip address). Default password is `admin`. The settings page allows you to enter your own settings for the base coordinates, ntrip credentials and so on...
 
@@ -232,7 +232,7 @@ So, if you really want it, let's go for a manual installation with some explanat
 
 1. If you didn't have already configure your gnss receiver, you must set it to output raw or rtcm3 data:
    
-   If it's a U-Blox ZED-F9P (usb or uart), or a Septentrio Mosaic-X5 (usb), or a Unicore UM980/UM982 you can use 
+   If it's a U-Blox ZED-F9P (usb or uart), or a Septentrio Mosaic-X5 (usb), or a Unicore UM960/UM980/UM982 you can use 
    ```bash
    sudo ./install.sh --detect-gnss --configure-gnss
    ```

@@ -434,7 +434,7 @@ detect_gnss() {
                     detected_gnss[2]=$port_speed
                     #echo 'U-blox ZED-F9P DETECTED ON '$port $port_speed
                     break
-                elif { model=$(python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/$port --baudrate $port_speed --command get_model 2>/dev/null) ; [[ "${model}" == 'UM98'[0-2] ]] ;}; then
+                elif { model=$(python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/$port --baudrate $port_speed --command get_model 2>/dev/null) ; [[ "${model}" == 'UM98'[0-2] || "${model}" == 'UM960' ]] ;}; then
                     detected_gnss[0]=$port
                     detected_gnss[1]='unicore'
                     detected_gnss[2]=$port_speed
@@ -463,7 +463,7 @@ detect_gnss() {
           detected_gnss[3]="$(python3 "${rtkbase_path}"/tools/sept_tool.py --port /dev/ttyGNSS_CTRL --baudrate ${detected_gnss[2]} --command get_firmware --retry 5)" || firmware='?'
       elif [[ "${detected_gnss[1]}" =~ 'unicore' ]]
         then
-          #get Unicore UM98X firmware release
+          #get Unicore UM9xx firmware release
           detected_gnss[3]="$(python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/"${detected_gnss[0]}" --baudrate ${detected_gnss[2]} --command get_firmware 2>/dev/null)" || firmware='?'
       fi
       # "send" result
@@ -568,13 +568,13 @@ configure_gnss(){
             return $?
           fi
 
-        elif { model=$(python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/${com_port} --baudrate ${com_port_settings%%:*} --command get_model 2>/dev/null) ; [[ "${model}" == 'UM98'[0-2] ]] ;}
+        elif { model=$(python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/${com_port} --baudrate ${com_port_settings%%:*} --command get_model 2>/dev/null) ; [[ "${model}" == 'UM98'[0-2] || "${model}" == 'UM960' ]] ;}
           then
-          #get UM98x firmware release
+          #get UM9xx firmware release
           firmware="$(python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/${com_port} --baudrate ${com_port_settings%%:*} --command get_firmware 2>/dev/null)" || firmware='?'
           echo 'Unicore-' "${model}" 'Firmware: ' "${firmware}"
           sudo -u "${RTKBASE_USER}" sed -i s/^receiver_firmware=.*/receiver_firmware=\'${firmware}\'/ "${rtkbase_path}"/settings.conf
-          #configure the UM980/UM982 for RTKBase
+          #configure the UM960/UM980/UM982 for RTKBase
           echo 'Resetting the ' "${model}" ' settings....'
           python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/${com_port} --baudrate ${com_port_settings%%:*} --command reset --retry 5
           sleep_time=10 ; echo 'Waiting '$sleep_time's for ' "${model}" ' reboot' ; sleep $sleep_time
@@ -582,7 +582,7 @@ configure_gnss(){
           python3 "${rtkbase_path}"/tools/unicore_tool.py --port /dev/${com_port} --baudrate ${com_port_settings%%:*} --command send_config_file "${rtkbase_path}"/receiver_cfg/Unicore_"${model}"_rtcm3.cfg --store --retry 2
           if [[ $? -eq  0 ]]
           then
-            echo 'Unicore UM980 successfuly configured'
+            echo 'Unicore UM9xx successfully configured'
             sudo -u "${RTKBASE_USER}" sed -i s/^com_port_settings=.*/com_port_settings=\'115200:8:n:1\'/ "${rtkbase_path}"/settings.conf                        && \
             sudo -u "${RTKBASE_USER}" sed -i s/^receiver=.*/receiver=\'Unicore_$model\'/ "${rtkbase_path}"/settings.conf                                         && \
             sudo -u "${RTKBASE_USER}" sed -i s/^receiver_format=.*/receiver_format=\'rtcm3\'/ "${rtkbase_path}"/settings.conf
